@@ -24,7 +24,7 @@ jobs:
           # gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }} # can be base64 encoded or plain text || not needed if you use google-github-actions/auth
           registry: gcr.io
           project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
-          image_name: express-test
+          image_name: next-blog-example-api
           image_tag: latest,v1
           dockerfile: ./deploy/Dockerfile
           context: .
