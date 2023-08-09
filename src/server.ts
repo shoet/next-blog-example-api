@@ -1,11 +1,12 @@
-import express, { NextFunction, Request, Response } from 'express'
 import * as http from 'http'
-import * as dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import * as dotenv from 'dotenv'
+import express, { NextFunction, Request, Response } from 'express'
 import helmet from 'helmet'
 
-import { internalErrorMiddleware } from '@/handler/error'
+import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
+import { getUserHandler } from '@/handlers/user'
 import { morgan } from '@/lib/morgan'
 
 import { getEnvConfig } from '@/util/config'
@@ -31,10 +32,13 @@ app.use(helmet())
 // app.use(session()) // express-session
 
 // Route Handler --------------------------------------------------
-app.get('/test', (req: Request, res: Response, next: NextFunction) => {
-  console.log(req)
-  return res.status(200).json({ message: 'success' })
-})
+app.get('/user/:id', tryWrapAPI(getUserHandler))
+
+// blog crud
+app.get('/blog/:id', tryWrapAPI())
+app.post('/blog/new')
+app.post('/blog/delete/:id')
+app.post('/blog/update/:id')
 
 // Error Middleware ----------------------------------------------------
 app.use(internalErrorMiddleware)
