@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { ApiResponse } from "@/type/api";
-import { BadRequest, Conflict, NotFound, Unauthorized } from "@/type/error";
+import { Request, Response, NextFunction } from 'express'
+import { ApiResponse } from '@/type/api'
+import { BadRequest, Conflict, NotFound, Unauthorized } from '@/type/error'
 // import { verifyToken } from "@/util/http";
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -55,14 +55,14 @@ export const tryWrapAPI = (
     try {
       return handler(req, res, next, ...rest)
         .then(({ status, data }) => {
-          return res.status(status).json(data);
+          return res.status(status).json(data)
         })
-        .catch((err) => next(err));
+        .catch((err) => next(err))
     } catch (err) {
-      next(err);
+      next(err)
     }
-  };
-};
+  }
+}
 /* eslint-enable */
 
 // export const AuthGuard = (req: Request, res: Response, next: NextFunction) => {

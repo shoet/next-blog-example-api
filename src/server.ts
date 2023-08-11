@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv'
 import express from 'express'
 import helmet from 'helmet'
 import { signInHandler, signUpHandler } from './handlers/auth'
+import { addBlogHandler, getBlogHandler } from './handlers/blog'
 import { NotFound } from './type/error'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
 import { getUserHandler } from '@/handlers/user'
@@ -35,8 +36,8 @@ app.use(helmet())
 app.get('/user/:id', tryWrapAPI(getUserHandler))
 
 // blog crud
-app.get('/blog/:id')
-app.post('/blog/new')
+app.get('/blog/:id', tryWrapAPI(getBlogHandler))
+app.post('/blog/new', tryWrapAPI(addBlogHandler))
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')
 
