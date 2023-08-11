@@ -17,10 +17,10 @@ export class NotFound extends Error {
   status: number
   message: string
 
-  constructor(message: string) {
+  constructor(message?: string) {
     super('NotFound')
     this.status = 404
-    this.message = message
+    this.message = message ?? 'NotFound'
   }
 }
 

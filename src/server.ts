@@ -35,7 +35,7 @@ app.use(helmet())
 app.get('/user/:id', tryWrapAPI(getUserHandler))
 
 // blog crud
-app.get('/blog/:id', tryWrapAPI())
+app.get('/blog/:id')
 app.post('/blog/new')
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')
@@ -43,6 +43,14 @@ app.post('/blog/update/:id')
 // auth
 app.post('/auth/signin', tryWrapAPI(signInHandler))
 app.post('/auth/signup', tryWrapAPI(signUpHandler))
+
+// NotFound wrapper
+app.get(
+  '*',
+  tryWrapAPI(() => {
+    throw new NotFound()
+  }),
+)
 
 // Error Middleware ----------------------------------------------------
 app.use(internalErrorMiddleware)
