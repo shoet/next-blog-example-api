@@ -2,13 +2,13 @@ import * as http from 'http'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import * as dotenv from 'dotenv'
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import helmet from 'helmet'
-
+import { signInHandler, signUpHandler } from './handlers/auth'
+import { NotFound } from './type/error'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
 import { getUserHandler } from '@/handlers/user'
 import { morgan } from '@/lib/morgan'
-
 import { getEnvConfig } from '@/util/config'
 
 dotenv.config()
@@ -39,6 +39,10 @@ app.get('/blog/:id', tryWrapAPI())
 app.post('/blog/new')
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')
+
+// auth
+app.post('/auth/signin', tryWrapAPI(signInHandler))
+app.post('/auth/signup', tryWrapAPI(signUpHandler))
 
 // Error Middleware ----------------------------------------------------
 app.use(internalErrorMiddleware)
