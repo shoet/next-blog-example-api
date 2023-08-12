@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from 'express'
 import * as blogService from '@/services/blog'
 import { ApiResponse } from '@/type/api'
 import { BadRequest, NotFound } from '@/type/error'
+import {
+  parseAndValidateNumber,
+  validateDefined,
+  validateEmpty,
+} from '@/util/handler'
 
 export const getBlogHandler = async (
   req: Request,
@@ -32,35 +37,34 @@ export const addBlogHandler = async (
   _res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
-  const body = req.body
-  // TODO: validation
-  console.log(body)
-
   const {
     title,
     slug,
-    categoryId,
-    body: blogBody,
-    authorId,
+    categoryId: categoryIdStr,
+    content,
+    authorId: authorIdStr,
     publish,
-    statusId,
+    statusId: statusIdStr,
     tags,
   } = req.body
 
-  if (
-    title === undefined ||
-    slug === undefined ||
-    categoryId === undefined ||
-    blogBody === undefined ||
-    authorId === undefined ||
-    publish === undefined ||
-    statusId === undefined ||
-    tags === undefined
-  ) {
-    throw new BadRequest('Invalid params', req)
-  }
+  validateDefined({ title, slug, content, publish }, req)
+  validateEmpty({ title, slug, content, publish }, req)
+  const categoryId = parseAndValidateNumber(
+    categoryIdStr,
+    'Invalid categoryId',
+    req,
+  )
+  const authorId = parseAndValidateNumber(authorIdStr, 'Invalid authorId', req)
+  const statusId = parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
 
-  const blog = await blogService.addBlog({ ...req.body })
+  const blog = await blogService.addBlog({
+    ...req.body,
+    categoryId: categoryId,
+    authorId: authorId,
+    statusId: statusId,
+    tags: tags,
+  })
 
   return {
     data: blog,
