@@ -41,9 +41,22 @@ app.post('/blog/new', tryWrapAPI(blogHandler.addBlogHandler))
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')
 
+// public
+app.post('/image/new')
+app.get('/image/public/:id')
+app.get('/image/private/:id')
+app.post('/image/delete/:id')
+
+// TODO: lite stream
+
 // auth
 app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))
 app.post('/auth/signup', tryWrapAPI(authHandler.signUpHandler))
+
+// batch
+app.post('/batch/task/new')
+app.post('/batch/task/update/:id')
+app.post('/batch/downloadPage')
 
 // NotFound wrapper
 app.get(
