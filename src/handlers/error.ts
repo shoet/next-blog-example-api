@@ -8,37 +8,37 @@ export const internalErrorMiddleware = (
   err: any,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   if (err instanceof SyntaxError) {
     // JSON syntax invalid
-    console.log("[SyntaxError]");
-    console.log(err.message);
-    return res.status(400).json({ message: err.message });
+    console.log('[SyntaxError]')
+    console.log(err.message)
+    return res.status(400).json({ message: err.message })
   }
   if (err instanceof Conflict) {
-    console.log("[Conflict]");
-    console.log(err.message);
-    return res.status(err.status).json({ message: err.message });
+    console.log('[Conflict]')
+    console.log(err.message)
+    return res.status(err.status).json({ message: err.message })
   }
   if (err instanceof Unauthorized) {
-    console.log("[Unauthorized]");
-    console.log(err.message);
-    return res.status(err.status).json({ message: err.message });
+    console.log('[Unauthorized]')
+    console.log(err.message)
+    return res.status(err.status).json({ message: err.message })
   }
   if (err instanceof BadRequest) {
-    console.log("[BadRequest]");
-    console.log(err.message);
-    return res.status(err.status).json({ message: err.message });
+    console.log('[BadRequest]')
+    console.log(err.message)
+    return res.status(err.status).json({ message: err.message })
   }
   if (err instanceof NotFound) {
-    console.log("[NotFound]");
-    return res.status(err.status).json({ message: err.message });
+    console.log('[NotFound]')
+    return res.status(err.status).json({ message: err.message })
   }
-  console.log(req);
-  console.log(err.message);
-  return res.status(500).json({ message: "Internal Server Error" });
-};
+  // console.log(req);
+  console.log(err.message)
+  return res.status(500).json({ message: 'Internal Server Error' })
+}
 /* eslint-enable */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
