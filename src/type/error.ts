@@ -45,3 +45,14 @@ export class Conflict extends Error {
     this.message = message
   }
 }
+
+export class ConfigurationError extends Error {
+  status: number
+  message: string
+
+  constructor(message: string) {
+    super('ConfigurationError')
+    this.status = 500
+    this.message = message
+  }
+}

@@ -3,7 +3,7 @@ import { getUserWithPassword, addUser } from './user'
 import { hashPass, compare } from '@/lib/bcrypt'
 import { Unauthorized } from '@/type/error'
 
-type AuthedUser = Omit<User, 'password'>
+export type AuthedUser = Omit<User, 'password'>
 
 export const signIn = async (
   email: string,

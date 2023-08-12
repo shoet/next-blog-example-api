@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import * as userService from '@/services/user'
 import { ApiResponse } from '@/type/api'
 import { BadRequest, NotFound } from '@/type/error'
+import { notFoundMessage, valueIsInvalidMessage } from '@/util/error'
 
 /**
  * ユーザーAPI（個別取得）
@@ -17,17 +18,23 @@ export const getUserHandler = async (
   _next: NextFunction,
 ): Promise<ApiResponse> => {
   if (!req.params.id) {
-    throw new BadRequest('id not found in query', req)
+    throw new BadRequest(
+      notFoundMessage('Path params', 'id', req.params.id),
+      req,
+    )
   }
 
   const userId = Number(req.params.id)
   if (isNaN(userId)) {
-    throw new BadRequest('Invalid query', req)
+    throw new BadRequest(
+      valueIsInvalidMessage('Path params', 'id', req.params.id),
+      req,
+    )
   }
 
   const user = await userService.getUser({ id: userId })
   if (user === undefined) {
-    throw new NotFound(`User with ID ${userId} not found`)
+    throw new NotFound(notFoundMessage('Path params', 'id', `${userId}`))
   }
 
   return {

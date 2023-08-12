@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express'
 import { signIn, signUp } from '@/services/auth'
 import { ApiResponse } from '@/type/api'
 import { BadRequest } from '@/type/error'
+import { valueIsRequireMessage } from '@/util/error'
+import { setCookieToken } from '@/util/http'
 
 /**
  * 認証API（サインイン）
@@ -13,17 +15,17 @@ import { BadRequest } from '@/type/error'
  */
 export const signInHandler = async (
   req: Request,
-  _res: Response,
+  res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
   if (!req.body.email) {
-    throw new BadRequest('email is require', req)
+    throw new BadRequest(valueIsRequireMessage('Request body', 'email'), req)
   }
   if (!req.body.password) {
-    throw new BadRequest('password is require', req)
+    throw new BadRequest(valueIsRequireMessage('Request body', 'password'), req)
   }
   const user = await signIn(req.body.email, req.body.password)
-  // TODO: setCookie
+  setCookieToken(res, user)
   return {
     data: user,
     status: 200,
