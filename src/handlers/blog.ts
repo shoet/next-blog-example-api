@@ -14,11 +14,12 @@ export const getBlogHandler = async (
   _next: NextFunction,
 ): Promise<ApiResponse> => {
   if (!req.params.id) {
+    throw new BadRequest('id not found in query', req)
   }
 
   const blogId = Number(req.params.id)
   if (isNaN(blogId)) {
-    throw new BadRequest('id not found in query', req)
+    throw new BadRequest('Invalid params', req)
   }
 
   const blog = await blogService.getBlog(blogId)
@@ -58,8 +59,15 @@ export const addBlogHandler = async (
   const authorId = parseAndValidateNumber(authorIdStr, 'Invalid authorId', req)
   const statusId = parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
 
-  const blog = await blogService.addBlog({
-    ...req.body,
+  if (await blogService.doesBlogExistWithSlug(slug)) {
+    throw new BadRequest('Slug is already exists', req)
+  }
+
+  const blog = await blogService.postBlog({
+    title: title,
+    slug: slug,
+    content: content,
+    publish: publish,
     categoryId: categoryId,
     authorId: authorId,
     statusId: statusId,

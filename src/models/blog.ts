@@ -1,20 +1,34 @@
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 
-export const getBlogs = async (
-  where: { id?: number; title?: string; categoryId?: number; tag?: string },
+type BlogWhereProps = {
+  where?: Prisma.BlogWhereInput
+  start?: number
+  end?: number
+  select?: Prisma.BlogSelect
+}
+
+export const selectBlogs = async ({
+  where,
   start = 0,
-  end: number = start + 1,
-) => {
+  end = start + 1,
+  select,
+}: BlogWhereProps) => {
   const blogs = await prisma.blog.findMany({
     where: where,
     skip: start,
     take: end,
+    select: select,
   })
   return blogs
 }
 
-export const addBlog = async (data: Prisma.BlogCreateInput) => {
+export const selectBlogCount = async ({ where }: BlogWhereProps) => {
+  const count = await prisma.blog.count({ where: where })
+  return count
+}
+
+export const insertBlog = async (data: Prisma.BlogCreateInput) => {
   const blog = await prisma.blog.create({ data: data })
   return blog
 }
