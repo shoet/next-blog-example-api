@@ -7,6 +7,11 @@ export const getBlog = async (id: number) => {
   return blogs[0]
 }
 
+export const getBlogIds = async () => {
+  const ids = await blogModel.selectAllBlogIds()
+  return ids
+}
+
 export const searchBlogs = async (
   id?: number,
   title?: string,
@@ -36,6 +41,7 @@ export type AddBlogProps = {
   tags?: string[]
   eyeCatchImgUrl?: string
 }
+
 export const postBlog = async ({
   title,
   content,

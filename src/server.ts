@@ -4,12 +4,13 @@ import cors from 'cors'
 import * as dotenv from 'dotenv'
 import express from 'express'
 import helmet from 'helmet'
-import { signInHandler, signUpHandler } from './handlers/auth'
-import { addBlogHandler, getBlogHandler } from './handlers/blog'
-import { NotFound } from './type/error'
+import * as authHandler from '@/handlers/auth'
+import * as blogHandler from '@/handlers/blog'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
-import { getUserHandler } from '@/handlers/user'
+import * as userHandler from '@/handlers/user'
 import { morgan } from '@/lib/morgan'
+import { NotFound } from '@/type/error'
+import { envVarNotSetMessage } from '@/util/error'
 
 dotenv.config()
 
@@ -31,17 +32,18 @@ app.use(helmet())
 // app.use(session()) // express-session
 
 // Route Handler --------------------------------------------------
-app.get('/user/:id', tryWrapAPI(getUserHandler))
+app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
 
 // blog crud
-app.get('/blog/:id', tryWrapAPI(getBlogHandler))
-app.post('/blog/new', tryWrapAPI(addBlogHandler))
+app.get('/blog/ids', tryWrapAPI(blogHandler.getBlogIdsHandler))
+app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
+app.post('/blog/new', tryWrapAPI(blogHandler.addBlogHandler))
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')
 
 // auth
-app.post('/auth/signin', tryWrapAPI(signInHandler))
-app.post('/auth/signup', tryWrapAPI(signUpHandler))
+app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))
+app.post('/auth/signup', tryWrapAPI(authHandler.signUpHandler))
 
 // NotFound wrapper
 app.get(

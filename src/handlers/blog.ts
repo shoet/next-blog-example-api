@@ -33,6 +33,18 @@ export const getBlogHandler = async (
   }
 }
 
+export const getBlogIdsHandler = async (
+  req: Request,
+  _res: Response,
+  _next: NextFunction,
+): Promise<ApiResponse> => {
+  const blogIds = await blogService.getBlogIds()
+  return {
+    data: blogIds,
+    status: 200,
+  }
+}
+
 export const addBlogHandler = async (
   req: Request,
   _res: Response,

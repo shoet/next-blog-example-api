@@ -8,6 +8,13 @@ type BlogWhereProps = {
   select?: Prisma.BlogSelect
 }
 
+export const selectAllBlogIds = async () => {
+  const blogIds = await prisma.blog.findMany({
+    select: { id: true },
+  })
+  return blogIds
+}
+
 export const selectBlogs = async ({
   where,
   start = 0,
