@@ -10,11 +10,9 @@ import { NotFound } from './type/error'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
 import { getUserHandler } from '@/handlers/user'
 import { morgan } from '@/lib/morgan'
-import { getEnvConfig } from '@/util/config'
 
 dotenv.config()
 
-const envConfig = getEnvConfig(process.env.NODE_ENV)
 const app = express()
 const server = http.createServer(app)
 
@@ -57,9 +55,13 @@ app.get(
 app.use(internalErrorMiddleware)
 
 // Server Setting -----------------------------------------------------
+if (!process.env.APP_PORT) {
+  console.log(envVarNotSetMessage('APP_PORT'))
+  process.exit(1)
+}
 app
-  .listen(envConfig.app.port, () =>
-    console.log(`Start listening port ${envConfig.app.port}`),
+  .listen(process.env.APP_PORT, () =>
+    console.log(`Start listening port ${process.env.APP_PORT}`),
   )
   .on('error', (err) => {
     console.error(err)
