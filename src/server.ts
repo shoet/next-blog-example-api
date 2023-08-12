@@ -53,6 +53,11 @@ app.post('/image/delete/:id')
 app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))
 app.post('/auth/signup', tryWrapAPI(authHandler.signUpHandler))
 
+// batch
+app.post('/batch/task/new')
+app.post('/batch/task/update/:id')
+app.post('/batch/downloadPage')
+
 // NotFound wrapper
 app.get(
   '*',
