@@ -1,4 +1,3 @@
-# ARG GOOGLE_APPLICATION_CREDENTIALS
 ARG DB_REPLICA_REMOTE_PATH
 
 # build stage #########
@@ -19,7 +18,6 @@ RUN npm run build
 # runtime stage #########
 FROM node:18 as runtime
 
-# ARG GOOGLE_APPLICATION_CREDENTIALS
 ARG DB_REPLICA_REMOTE_PATH
 
 WORKDIR /usr/src/app
@@ -29,10 +27,6 @@ COPY --from=builder /usr/src/app/prisma ./prisma
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY deploy/entrypoint.sh ./
-
-# COPY .credentials ./.credentials
-# ENV GOOGLE_APPLICATION_CREDENTIALS .credentials/.gcp-credentials.json
-# ENV GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
 
 RUN npm install
 
