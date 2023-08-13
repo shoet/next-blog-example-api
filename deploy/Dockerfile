@@ -24,7 +24,6 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/prisma ./prisma
-COPY .env ./
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY deploy/entrypoint.sh ./
@@ -40,8 +39,11 @@ RUN tar -C /usr/local/bin -xzf /tmp/litestream.tar.gz
 
 ENV DB_REPLICA_REMOTE_PATH=$DB_REPLICA_REMOTE_PATH
 ENV NODE_ENV="production"
+ENV DATABASE_URL="file:./sqlite.db"
+ENV TZ="Asia/Tokyo"
+ENV APP_PORT="3001"
+ENV JWT_SECRET_KEY=$JWT_SECRET_KEY
 
 EXPOSE 3001
-
 RUN chmod +x /usr/src/app/entrypoint.sh
 CMD ["/usr/src/app/entrypoint.sh"]
