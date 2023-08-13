@@ -39,4 +39,6 @@ jobs:
           image_tag: latest,v1
           dockerfile: ./deploy/Dockerfile
           context: .
-          build_args: DB_REPLICA_REMOTE_PATH=${{ secrets.DB_REPLICA_REMOTE_PATH }}
+          build_args: |
+            DB_REPLICA_REMOTE_PATH=${{ secrets.DB_REPLICA_REMOTE_PATH }}
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
