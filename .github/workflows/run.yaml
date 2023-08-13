@@ -11,6 +11,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: SSH Setting
+        env:
+          TOKEN: ${{ secrets.SUB_MODULE_KEY }}
+        run: |
+          mkdir -p /home/runner/.ssh/
+          echo -e "$TOKEN" > /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+
+      - name: Checkout submodules
+        shell: bash
+        run: git submodule update --init --force --recursive
+
       - name: GCP Auth
         id: auth
         uses: google-github-actions/auth@v0
