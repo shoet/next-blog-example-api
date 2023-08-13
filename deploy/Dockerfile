@@ -1,4 +1,5 @@
 ARG DB_REPLICA_REMOTE_PATH
+ARG JWT_SECRET_KEY
 
 # build stage #########
 FROM node:18 as builder
@@ -19,6 +20,7 @@ RUN npm run build
 FROM node:18 as runtime
 
 ARG DB_REPLICA_REMOTE_PATH
+ARG JWT_SECRET_KEY
 
 WORKDIR /usr/src/app
 
@@ -34,11 +36,11 @@ ADD https://github.com/benbjohnson/litestream/releases/download/v0.3.8/litestrea
 RUN tar -C /usr/local/bin -xzf /tmp/litestream.tar.gz
 
 ENV DB_REPLICA_REMOTE_PATH=$DB_REPLICA_REMOTE_PATH
+ENV JWT_SECRET_KEY=$JWT_SECRET_KEY
 ENV NODE_ENV="production"
 ENV DATABASE_URL="file:./sqlite.db"
 ENV TZ="Asia/Tokyo"
 ENV APP_PORT="3001"
-ENV JWT_SECRET_KEY=$JWT_SECRET_KEY
 
 EXPOSE 3001
 RUN chmod +x /usr/src/app/entrypoint.sh
