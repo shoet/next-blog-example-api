@@ -88,6 +88,6 @@ export const addBlogHandler = async (
 
   return {
     data: blog,
-    status: 200,
+    status: 201,
   }
 }

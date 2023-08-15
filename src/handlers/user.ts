@@ -39,6 +39,6 @@ export const getUserHandler = async (
 
   return {
     data: user,
-    status: 200,
+    status: 201,
   }
 }

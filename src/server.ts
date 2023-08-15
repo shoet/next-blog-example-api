@@ -6,6 +6,7 @@ import express from 'express'
 import helmet from 'helmet'
 import * as authHandler from '@/handlers/auth'
 import * as blogHandler from '@/handlers/blog'
+import * as categoryHandler from '@/handlers/category'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
 import * as userHandler from '@/handlers/user'
 import { morgan } from '@/lib/morgan'
@@ -40,6 +41,8 @@ app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
 app.post('/blog/new', tryWrapAPI(blogHandler.addBlogHandler))
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')
+
+app.get('/category', tryWrapAPI(categoryHandler.getCategoryHandler))
 
 // public
 app.post('/image/new')
