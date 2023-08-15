@@ -39,6 +39,7 @@ app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
 // blog crud
 app.get('/blog/ids', tryWrapAPI(blogHandler.getBlogIdsHandler))
 app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
+app.get('/blog/:id/tags', tryWrapAPI(blogHandler.getBlogTagsHandler))
 app.post('/blog/new', tryWrapAPI(blogHandler.addBlogHandler))
 app.post('/blog/delete/:id')
 app.post('/blog/update/:id')

@@ -1,8 +1,11 @@
 import { Prisma } from '@prisma/client'
 import * as blogModel from '@/models/blog'
 
-export const getBlog = async (id: number) => {
-  const blogs = await blogModel.selectBlogs({ where: { id: id } })
+export const getBlog = async (id: number, select?: Prisma.BlogSelect) => {
+  const blogs = await blogModel.selectBlogs({
+    where: { id: id },
+    select: select,
+  })
   if (blogs.length === 0) return undefined
   return blogs[0]
 }

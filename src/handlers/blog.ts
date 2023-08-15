@@ -1,5 +1,7 @@
+import { Tag } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import * as blogService from '@/services/blog'
+import * as tagService from '@/services/tag'
 import { ApiResponse } from '@/type/api'
 import { BadRequest, NotFound } from '@/type/error'
 import {
@@ -29,6 +31,30 @@ export const getBlogHandler = async (
 
   return {
     data: blog,
+    status: 200,
+  }
+}
+
+interface GetBlogTagsHandlerResponse extends ApiResponse {
+  data: Tag[]
+}
+export const getBlogTagsHandler = async (
+  req: Request,
+  _res: Response,
+  _next: NextFunction,
+): Promise<GetBlogTagsHandlerResponse> => {
+  if (!req.params.id) {
+    throw new BadRequest('id not found in query', req)
+  }
+
+  const blogId = Number(req.params.id)
+  if (isNaN(blogId)) {
+    throw new BadRequest('Invalid params', req)
+  }
+
+  const tags = await tagService.searchTags({ blogs: { some: { id: blogId } } })
+  return {
+    data: tags,
     status: 200,
   }
 }
