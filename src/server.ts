@@ -33,6 +33,7 @@ app.use(helmet())
 // app.use(session()) // express-session
 
 // Route Handler --------------------------------------------------
+app.get('/user/me', tryWrapAPI(userHandler.getUserMeHandler))
 app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
 
 // blog crud

@@ -20,7 +20,9 @@ export function verifyToken(token: string) {
     const decodedPayload = jwt.verify(token, process.env.JWT_SECRET_KEY)
     return decodedPayload
   } catch (err) {
-    throw new Unauthorized(valueIsInvalidMessage('Arguments', 'token', token))
+    throw new Unauthorized(
+      valueIsInvalidMessage('Arguments', 'auth_token', token),
+    )
   }
 }
 

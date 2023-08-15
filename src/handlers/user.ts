@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import * as userService from '@/services/user'
 import { ApiResponse } from '@/type/api'
-import { BadRequest, NotFound } from '@/type/error'
+import { BadRequest, NotFound, Unauthorized } from '@/type/error'
 import { notFoundMessage, valueIsInvalidMessage } from '@/util/error'
+import { verifyToken } from '@/util/http'
 
 /**
  * ユーザーAPI（個別取得）
@@ -41,4 +42,23 @@ export const getUserHandler = async (
     data: user,
     status: 201,
   }
+}
+
+export const getUserMeHandler = async (
+  req: Request,
+  _res: Response,
+  _next: NextFunction,
+): Promise<ApiResponse> => {
+  const token = req.cookies['auth_token']
+  console.log(token)
+  if (!token) {
+    throw new Unauthorized('Unauthorized')
+  }
+  const decodedPayload = verifyToken(token)
+  const userId = Number(decodedPayload)
+  const user = await userService.getUser({ id: userId })
+  if (!user) {
+    throw new Unauthorized('Unauthorized')
+  }
+  return { data: user, status: 200 }
 }
