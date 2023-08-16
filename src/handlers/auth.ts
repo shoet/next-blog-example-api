@@ -3,6 +3,7 @@ import { signIn, signUp } from '@/services/auth'
 import { ApiResponse } from '@/type/api'
 import { BadRequest } from '@/type/error'
 import { valueIsRequireMessage } from '@/util/error'
+import { validateDefined } from '@/util/handler'
 import { setCookieToken } from '@/util/http'
 
 /**
@@ -45,14 +46,14 @@ export const signUpHandler = async (
   _res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
-  if (!req.body.email) {
-    throw new BadRequest('email is require', req)
-  }
-  if (!req.body.password) {
-    throw new BadRequest('password is require', req)
-  }
+  const { email, password, name } = req.body
+  validateDefined({ email, password, name }, req)
 
-  const user = await signUp(req.body.email, req.body.password)
+  const user = await signUp(
+    req.body.email,
+    req.body.password,
+    req.body.username,
+  )
   return {
     data: user,
     status: 200,

@@ -27,11 +27,13 @@ export const signIn = async (
 export const signUp = async (
   email: string,
   password: string,
-): Promise<AuthedUser> => {
-  // TODO: validation
-  // user already
-
-  const hashedPassword = await hashPass(password)
-  const user = await addUser(email, hashedPassword)
-  return user
+  name: string,
+): Promise<void> => {
+  // TODO: セキュリティからエラーレスポンスは返さない
+  try {
+    const hashedPassword = await hashPass(password)
+    addUser(email, hashedPassword, name)
+  } catch (err) {
+    console.log(err)
+  }
 }

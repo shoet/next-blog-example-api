@@ -18,7 +18,11 @@ export const getUserWithPassword = async ({ id, email }: GetUserOptions) => {
   return users[0]
 }
 
-export const addUser = async (email: string, password: string) => {
-  const user = await userModel.addUser(email, password)
+export const addUser = async (
+  email: string,
+  password: string,
+  name: string,
+) => {
+  const user = await userModel.addUser(email, password, name)
   return withoutPassword(user)
 }
