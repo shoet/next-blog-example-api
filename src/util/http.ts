@@ -35,7 +35,18 @@ export function setCookieToken(
   res.cookie(tokenKey, token, {
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none', // TODO
-    maxAge: 1000 * 60 * 60 * 24 * 14, // 2 week
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 24 * 14,
+  })
+}
+
+export function clearCookieToken(
+  res: Response,
+  tokenKey: string = 'auth_token',
+) {
+  res.clearCookie(tokenKey, {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
   })
 }

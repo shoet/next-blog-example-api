@@ -52,11 +52,10 @@ app.get('/image/public/:id')
 app.get('/image/private/:id')
 app.post('/image/delete/:id')
 
-// TODO: lite stream
-
 // auth
 app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))
 app.post('/auth/signup', tryWrapAPI(authHandler.signUpHandler))
+app.post('/auth/signout', tryWrapAPI(authHandler.signOutHandler))
 
 // NotFound wrapper
 app.get(

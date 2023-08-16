@@ -4,7 +4,7 @@ import { ApiResponse } from '@/type/api'
 import { BadRequest } from '@/type/error'
 import { valueIsRequireMessage } from '@/util/error'
 import { validateDefined } from '@/util/handler'
-import { setCookieToken } from '@/util/http'
+import { clearCookieToken, setCookieToken } from '@/util/http'
 
 /**
  * 認証API（サインイン）
@@ -56,6 +56,18 @@ export const signUpHandler = async (
   )
   return {
     data: user,
+    status: 200,
+  }
+}
+
+export const signOutHandler = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction,
+): Promise<ApiResponse> => {
+  clearCookieToken(res)
+  return {
+    data: undefined,
     status: 200,
   }
 }
