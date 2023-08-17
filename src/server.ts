@@ -42,6 +42,10 @@ app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
 app.get('/blog/ids', tryWrapAPI(blogHandler.getBlogIdsHandler))
 app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
 app.get('/blog/:id/tags', tryWrapAPI(blogHandler.getBlogTagsHandler))
+// TODO: POSTに冪等性をもたせるとしたら。
+// 前段でユニークなキーを提供する。
+// クライアントでキーを含めてリクエストする。
+// 同一キーなら上書きする。
 app.post('/blog', tryWrapAPI(blogHandler.createBlogHandler))
 app.delete('/blog/:id', tryWrapAPI(blogHandler.deleteBlogHandler))
 // TODO: 必要となるケースはあるか、updateStatusなどで賄えるのであれば不要か。

@@ -127,7 +127,11 @@ export const deleteBlogHandler = async (
   validateDefined({ id: req.params.id }, req)
   const blogId = parseAndValidateNumber(req.params.id, 'Invalid id', req)
   if (!(await blogService.doesBlogExists(blogId))) {
-    throw new NotFound(notFoundMessage('URL params', 'id', req.params.id))
+    // 冪等性: 削除済みに対して再度DELETEを投げてもエラーにはさせない。
+    return {
+      data: {},
+      status: 200,
+    }
   }
   await blogService.removeBlog(blogId)
   return {
