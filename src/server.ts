@@ -32,6 +32,8 @@ app.use(helmet())
 
 // app.use(session()) // express-session
 
+// TODO: auth guard
+
 // Route Handler --------------------------------------------------
 app.get('/user/me', tryWrapAPI(userHandler.getUserMeHandler))
 app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
@@ -40,17 +42,19 @@ app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
 app.get('/blog/ids', tryWrapAPI(blogHandler.getBlogIdsHandler))
 app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
 app.get('/blog/:id/tags', tryWrapAPI(blogHandler.getBlogTagsHandler))
-app.post('/blog/new', tryWrapAPI(blogHandler.addBlogHandler))
-app.post('/blog/delete/:id')
-app.post('/blog/update/:id')
+app.post('/blog', tryWrapAPI(blogHandler.createBlogHandler))
+app.delete('/blog', tryWrapAPI(blogHandler.deleteBlogHandler))
+app.patch('/blog', tryWrapAPI(blogHandler.patchBlogHandler))
 
 app.get('/category', tryWrapAPI(categoryHandler.getCategoryHandler))
 
 // public
-app.post('/image/new')
 app.get('/image/public/:id')
+app.post('/image/public')
+app.delete('/image/public/delete')
 app.get('/image/private/:id')
-app.post('/image/delete/:id')
+app.post('/image/private')
+app.delete('/image/private/delete')
 
 // auth
 app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))

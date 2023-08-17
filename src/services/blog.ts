@@ -1,5 +1,6 @@
-import { Prisma } from '@prisma/client'
+import { Blog, Prisma } from '@prisma/client'
 import * as blogModel from '@/models/blog'
+import { notFoundMessage } from '@/util/error'
 
 export const getBlog = async (id: number, select?: Prisma.BlogSelect) => {
   const blogs = await blogModel.selectBlogs({
@@ -78,7 +79,52 @@ export const postBlog = async ({
   return blog
 }
 
-export const doesBlogExistWithSlug = async (slug: string) => {
-  const blogCount = await blogModel.selectBlogCount({ where: { slug: slug } })
+export const doesBlogExistWithSlug = async (authorId: number, slug: string) => {
+  const blogCount = await blogModel.selectBlogCount({
+    where: { AND: { authorId: authorId, slug: slug } },
+  })
   return blogCount > 0
+}
+
+/** slugがblogの自身のものと一致するか */
+export const doesOtherBlogSlug = async (
+  blogId: number,
+  slug: string,
+  authorId: number,
+): Promise<boolean> => {
+  const searchBlogs = await blogModel.selectBlogs({
+    where: { slug: slug, authorId: authorId },
+    select: { id: true },
+  })
+  if (searchBlogs.length === 1 && searchBlogs[0].id !== blogId) {
+    return true
+  }
+  return false
+}
+
+/** authorIdが該当blogに属するか */
+export const doesSameAuthorId = async (blogId: number, authorId: number) => {
+  const searchBlogs = await blogModel.selectBlogs({
+    where: { id: blogId },
+    select: { id: true, authorId: true },
+  })
+  if (searchBlogs.length === 0) {
+    return false
+  }
+  return searchBlogs[0].authorId == authorId
+}
+
+export const removeBlog = async (id: number) => {
+  const blog = await blogModel.deleteBlog(id)
+  return blog
+}
+
+type BlogPatchInput = Omit<Prisma.BlogUpdateInput, 'author'>
+export const patchBlog = async (
+  id: number,
+  authorId: number,
+  data: Prisma.BlogUpdateInput,
+) => {
+  const blog = await blogModel.updateBlog(id, authorId, data)
+  return blog
 }

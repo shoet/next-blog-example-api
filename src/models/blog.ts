@@ -39,3 +39,21 @@ export const insertBlog = async (data: Prisma.BlogCreateInput) => {
   const blog = await prisma.blog.create({ data: data })
   return blog
 }
+
+export const deleteBlog = async (id: number) => {
+  const blog = await prisma.blog.delete({ where: { id } })
+  return blog
+}
+
+export const updateBlog = async (
+  id: number,
+  authorId: number,
+  data: Prisma.BlogUpdateInput,
+) => {
+  const { author, ...rest } = data
+  const blog = await prisma.blog.update({
+    where: { id: id, authorId: authorId },
+    data: { ...data },
+  })
+  return blog
+}

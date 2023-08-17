@@ -6,14 +6,6 @@ import { valueIsRequireMessage } from '@/util/error'
 import { validateDefined } from '@/util/handler'
 import { clearCookieToken, setCookieToken } from '@/util/http'
 
-/**
- * 認証API（サインイン）
- * @param req Request
- * @param res Response
- * @param next NextFunction
- * @returns ユーザー、ステータスコード
- *
- */
 export const signInHandler = async (
   req: Request,
   res: Response,
@@ -33,14 +25,6 @@ export const signInHandler = async (
   }
 }
 
-/**
- * 認証API（サインアップ）
- * @param req Request
- * @param res Response
- * @param next NextFunction
- * @returns ユーザー、ステータスコード
- *
- */
 export const signUpHandler = async (
   req: Request,
   _res: Response,
@@ -61,7 +45,7 @@ export const signUpHandler = async (
 }
 
 export const signOutHandler = async (
-  req: Request,
+  _req: Request,
   res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {

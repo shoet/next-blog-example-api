@@ -71,7 +71,7 @@ export const getBlogIdsHandler = async (
   }
 }
 
-export const addBlogHandler = async (
+export const createBlogHandler = async (
   req: Request,
   _res: Response,
   _next: NextFunction,
@@ -97,7 +97,7 @@ export const addBlogHandler = async (
   const authorId = parseAndValidateNumber(authorIdStr, 'Invalid authorId', req)
   const statusId = parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
 
-  if (await blogService.doesBlogExistWithSlug(slug)) {
+  if (await blogService.doesBlogExistWithSlug(authorId, slug)) {
     throw new BadRequest('Slug is already exists', req)
   }
 
@@ -115,5 +115,77 @@ export const addBlogHandler = async (
   return {
     data: blog,
     status: 201,
+  }
+}
+
+export const deleteBlogHandler = async (
+  req: Request,
+  _res: Response,
+  _next: NextFunction,
+): Promise<ApiResponse> => {
+  const { id: idStr } = req.body
+
+  validateDefined({ idStr }, req)
+  const blogId = parseAndValidateNumber(idStr, 'Invalid id', req)
+
+  const blog = await blogService.removeBlog(blogId)
+
+  return {
+    data: blog,
+    status: 200,
+  }
+}
+
+export const patchBlogHandler = async (
+  req: Request,
+  _res: Response,
+  _next: NextFunction,
+): Promise<ApiResponse> => {
+  const {
+    id,
+    title,
+    slug,
+    categoryId: categoryIdStr,
+    content,
+    authorId: authorIdStr,
+    publish,
+    statusId: statusIdStr,
+    tags,
+  } = req.body
+
+  const blogId = parseAndValidateNumber(id, 'Invalid id', req)
+  if (categoryIdStr === '') {
+    throw new BadRequest(`Invalid categoryId`, req)
+  }
+  const categoryId = parseAndValidateNumber(
+    categoryIdStr,
+    'Invalid categoryId',
+    req,
+  )
+  const authorId = parseAndValidateNumber(authorIdStr, 'Invalid authorId', req)
+  const statusId = parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
+
+  if (!(await blogService.doesSameAuthorId(blogId, authorId))) {
+    throw new BadRequest('Can not update dirrerent author blog', req)
+  }
+
+  if (await blogService.doesOtherBlogSlug(blogId, slug, authorId)) {
+    // 別のblogでslugが使われている。同じブログへの上書きは許可。
+    throw new BadRequest('Slug is already exists', req)
+  }
+
+  const blog = await blogService.patchBlog(blogId, authorId, {
+    title: title,
+    slug: slug,
+    content: content,
+    publish: publish,
+    category: { update: { id: categoryId } },
+    status: { update: { id: statusId } },
+    tags: { upsert: tags },
+  })
+
+  return {
+    data: blog,
+    status: 200,
   }
 }
