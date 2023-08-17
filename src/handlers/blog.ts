@@ -4,6 +4,7 @@ import * as blogService from '@/services/blog'
 import * as tagService from '@/services/tag'
 import { ApiResponse } from '@/type/api'
 import { BadRequest, NotFound } from '@/type/error'
+import { notFoundMessage } from '@/util/error'
 import {
   parseAndValidateNumber,
   validateDefined,
@@ -97,7 +98,7 @@ export const createBlogHandler = async (
   const authorId = parseAndValidateNumber(authorIdStr, 'Invalid authorId', req)
   const statusId = parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
 
-  if (await blogService.doesBlogExistWithSlug(authorId, slug)) {
+  if (await blogService.doesBlogExistsWithSlug(authorId, slug)) {
     throw new BadRequest('Slug is already exists', req)
   }
 
@@ -123,15 +124,14 @@ export const deleteBlogHandler = async (
   _res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
-  const { id: idStr } = req.body
-
-  validateDefined({ idStr }, req)
-  const blogId = parseAndValidateNumber(idStr, 'Invalid id', req)
-
-  const blog = await blogService.removeBlog(blogId)
-
+  validateDefined({ id: req.params.id }, req)
+  const blogId = parseAndValidateNumber(req.params.id, 'Invalid id', req)
+  if (!(await blogService.doesBlogExists(blogId))) {
+    throw new NotFound(notFoundMessage('URL params', 'id', req.params.id))
+  }
+  await blogService.removeBlog(blogId)
   return {
-    data: blog,
+    data: {},
     status: 200,
   }
 }
@@ -141,35 +141,35 @@ export const patchBlogHandler = async (
   _res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
+  const { authorId: authorIdStr, data } = req.body
   const {
-    id,
     title,
     slug,
     categoryId: categoryIdStr,
     content,
-    authorId: authorIdStr,
     publish,
     statusId: statusIdStr,
     tags,
-  } = req.body
+  } = data
 
-  const blogId = parseAndValidateNumber(id, 'Invalid id', req)
-  if (categoryIdStr === '') {
-    throw new BadRequest(`Invalid categoryId`, req)
-  }
-  const categoryId = parseAndValidateNumber(
-    categoryIdStr,
-    'Invalid categoryId',
-    req,
-  )
+  // Require
+  validateDefined({ id: req.params.id, authorId: authorIdStr }, req)
+  const blogId = parseAndValidateNumber(req.params.id, 'Invalid id', req)
   const authorId = parseAndValidateNumber(authorIdStr, 'Invalid authorId', req)
-  const statusId = parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
 
-  if (!(await blogService.doesSameAuthorId(blogId, authorId))) {
+  // Optional
+  const categoryId = categoryIdStr
+    ? parseAndValidateNumber(categoryIdStr, 'Invalid categoryId', req)
+    : undefined
+  const statusId = statusIdStr
+    ? parseAndValidateNumber(statusIdStr, 'Invalid statusId', req)
+    : undefined
+
+  if (!(await blogService.doesIncludeAuthorId(blogId, authorId))) {
     throw new BadRequest('Can not update dirrerent author blog', req)
   }
 
-  if (await blogService.doesOtherBlogSlug(blogId, slug, authorId)) {
+  if (!(await blogService.doesMatchBlogOwnSlug(blogId, slug, authorId))) {
     // 別のblogでslugが使われている。同じブログへの上書きは許可。
     throw new BadRequest('Slug is already exists', req)
   }

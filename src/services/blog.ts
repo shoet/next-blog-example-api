@@ -79,7 +79,25 @@ export const postBlog = async ({
   return blog
 }
 
-export const doesBlogExistWithSlug = async (authorId: number, slug: string) => {
+export const removeBlog = async (id: number) => {
+  const blog = await blogModel.deleteBlog(id)
+  return blog
+}
+
+export const patchBlog = async (
+  id: number,
+  authorId: number,
+  data: Prisma.BlogUpdateInput,
+) => {
+  const blog = await blogModel.updateBlog(id, authorId, data)
+  return blog
+}
+
+/** 同一Author内ですでにslugが使われているか */
+export const doesBlogExistsWithSlug = async (
+  authorId: number,
+  slug: string,
+) => {
   const blogCount = await blogModel.selectBlogCount({
     where: { AND: { authorId: authorId, slug: slug } },
   })
@@ -87,7 +105,7 @@ export const doesBlogExistWithSlug = async (authorId: number, slug: string) => {
 }
 
 /** slugがblogの自身のものと一致するか */
-export const doesOtherBlogSlug = async (
+export const doesMatchBlogOwnSlug = async (
   blogId: number,
   slug: string,
   authorId: number,
@@ -97,13 +115,13 @@ export const doesOtherBlogSlug = async (
     select: { id: true },
   })
   if (searchBlogs.length === 1 && searchBlogs[0].id !== blogId) {
-    return true
+    return false
   }
-  return false
+  return true
 }
 
 /** authorIdが該当blogに属するか */
-export const doesSameAuthorId = async (blogId: number, authorId: number) => {
+export const doesIncludeAuthorId = async (blogId: number, authorId: number) => {
   const searchBlogs = await blogModel.selectBlogs({
     where: { id: blogId },
     select: { id: true, authorId: true },
@@ -114,17 +132,8 @@ export const doesSameAuthorId = async (blogId: number, authorId: number) => {
   return searchBlogs[0].authorId == authorId
 }
 
-export const removeBlog = async (id: number) => {
-  const blog = await blogModel.deleteBlog(id)
-  return blog
-}
-
-type BlogPatchInput = Omit<Prisma.BlogUpdateInput, 'author'>
-export const patchBlog = async (
-  id: number,
-  authorId: number,
-  data: Prisma.BlogUpdateInput,
-) => {
-  const blog = await blogModel.updateBlog(id, authorId, data)
-  return blog
+/** blogが存在するか */
+export const doesBlogExists = async (blogId: number) => {
+  const count = await blogModel.selectBlogCount({ where: { id: blogId } })
+  return count > 0
 }

@@ -43,18 +43,19 @@ app.get('/blog/ids', tryWrapAPI(blogHandler.getBlogIdsHandler))
 app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
 app.get('/blog/:id/tags', tryWrapAPI(blogHandler.getBlogTagsHandler))
 app.post('/blog', tryWrapAPI(blogHandler.createBlogHandler))
-app.delete('/blog', tryWrapAPI(blogHandler.deleteBlogHandler))
-app.patch('/blog', tryWrapAPI(blogHandler.patchBlogHandler))
+app.delete('/blog/:id', tryWrapAPI(blogHandler.deleteBlogHandler))
+// TODO: 必要となるケースはあるか、updateStatusなどで賄えるのであれば不要か。
+app.patch('/blog/:id', tryWrapAPI(blogHandler.patchBlogHandler))
 
 app.get('/category', tryWrapAPI(categoryHandler.getCategoryHandler))
 
 // public
 app.get('/image/public/:id')
 app.post('/image/public')
-app.delete('/image/public/delete')
+app.delete('/image/public/:id')
 app.get('/image/private/:id')
 app.post('/image/private')
-app.delete('/image/private/delete')
+app.delete('/image/private/:id')
 
 // auth
 app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))
@@ -62,7 +63,7 @@ app.post('/auth/signup', tryWrapAPI(authHandler.signUpHandler))
 app.post('/auth/signout', tryWrapAPI(authHandler.signOutHandler))
 
 // NotFound wrapper
-app.get(
+app.all(
   '*',
   tryWrapAPI(() => {
     throw new NotFound()
