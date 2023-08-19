@@ -4,13 +4,16 @@ import * as blogService from '@/services/blog'
 import * as tagService from '@/services/tag'
 import { ApiResponse } from '@/type/api'
 import { BadRequest, NotFound } from '@/type/error'
-import { notFoundMessage } from '@/util/error'
 import {
   parseAndValidateNumber,
   validateDefined,
   validateEmpty,
 } from '@/util/handler'
 
+/** ブログAPI 個別取得
+ * @pathParams Blog.id
+ * @returns Blog
+ */
 export const getBlogHandler = async (
   req: Request,
   _res: Response,
@@ -39,6 +42,10 @@ export const getBlogHandler = async (
 interface GetBlogTagsHandlerResponse extends ApiResponse {
   data: Tag[]
 }
+/** ブログAPI タグ取得
+ * @pathParams Blog.id
+ * @returns Blog.tag[]
+ */
 export const getBlogTagsHandler = async (
   req: Request,
   _res: Response,
@@ -60,6 +67,9 @@ export const getBlogTagsHandler = async (
   }
 }
 
+/** ブログAPI IDリスト取得
+ * @returns Blog.id[]
+ */
 export const getBlogIdsHandler = async (
   req: Request,
   _res: Response,
@@ -72,6 +82,22 @@ export const getBlogIdsHandler = async (
   }
 }
 
+/** ブログAPI ブログ作成
+ * @body Blog
+ * @returns Blog
+ *
+ * ex in) 
+  {
+    "title": "title",
+    "slug": "slug",
+    "categoryId": "1",
+    "content": "content",
+    "authorId": "1",
+    "publish": true,
+    "statusId": "1",
+    "tags": [ "tag1", "tag2" ],
+  }
+ */
 export const createBlogHandler = async (
   req: Request,
   _res: Response,
@@ -119,6 +145,10 @@ export const createBlogHandler = async (
   }
 }
 
+/** ブログAPI ブログ削除
+ * @pathParams Blog.id
+ * @returns {}
+ */
 export const deleteBlogHandler = async (
   req: Request,
   _res: Response,
@@ -140,6 +170,24 @@ export const deleteBlogHandler = async (
   }
 }
 
+/** ブログAPI ブログ部分更新
+ * @pathParams Blog.id
+ * @body { authorId, data: Blog }
+ * @returns Blog
+ * ex in) 
+  {
+    "authorId": "1",
+    "data": {
+      "title": "title", // optional
+      "slug": "slug", // optional
+      "categoryId": "1", // optional
+      "content": "content", // optional
+      "publish": true, // optional
+      "statusId": "1", // optional
+      "tags": [ "tag1", "tag2" ], // optional
+    }
+  }
+ */
 export const patchBlogHandler = async (
   req: Request,
   _res: Response,
