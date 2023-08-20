@@ -28,3 +28,10 @@ export function parseAndValidateNumber(
   }
   return numberValue
 }
+
+export function undifinedSetNull<T>(value: T | undefined) {
+  if (value === undefined) {
+    return null
+  }
+  return value
+}

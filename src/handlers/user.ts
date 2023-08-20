@@ -40,7 +40,7 @@ export const getUserHandler = async (
 
   return {
     data: user,
-    status: 201,
+    status: 200,
   }
 }
 
@@ -50,7 +50,6 @@ export const getUserMeHandler = async (
   _next: NextFunction,
 ): Promise<ApiResponse> => {
   const token = req.cookies['auth_token']
-  console.log(token)
   if (!token) {
     throw new Unauthorized('Unauthorized')
   }

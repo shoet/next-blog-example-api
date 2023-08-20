@@ -48,7 +48,6 @@ app.get('/blog/:id/tags', tryWrapAPI(blogHandler.getBlogTagsHandler))
 // 同一キーなら上書きする。
 app.post('/blog', tryWrapAPI(blogHandler.createBlogHandler))
 app.delete('/blog/:id', tryWrapAPI(blogHandler.deleteBlogHandler))
-// TODO: 必要となるケースはあるか、updateStatusなどで賄えるのであれば不要か。
 app.patch('/blog/:id', tryWrapAPI(blogHandler.patchBlogHandler))
 
 app.get('/category', tryWrapAPI(categoryHandler.getCategoryHandler))

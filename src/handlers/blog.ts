@@ -2,7 +2,7 @@ import { Tag } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import * as blogService from '@/services/blog'
 import * as tagService from '@/services/tag'
-import { ApiResponse } from '@/type/api'
+import { ApiRequest, ApiResponse } from '@/type/api'
 import { BadRequest, NotFound } from '@/type/error'
 import {
   parseAndValidateNumber,
@@ -15,7 +15,7 @@ import {
  * @returns Blog
  */
 export const getBlogHandler = async (
-  req: Request,
+  req: ApiRequest,
   _res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
@@ -28,9 +28,9 @@ export const getBlogHandler = async (
     throw new BadRequest('Invalid params', req)
   }
 
-  const blog = await blogService.getBlog(blogId)
+  const blog = await blogService.getBlog(blogId, req.fieldMask)
   if (blog === undefined) {
-    throw new NotFound(`User with ID ${blogId} not found`)
+    throw new NotFound(`Blog with ID ${blogId} not found`)
   }
 
   return {

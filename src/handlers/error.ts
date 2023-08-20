@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { ApiResponse } from '@/type/api'
+import { parseFieldMask } from '@/lib/prisma'
+import { ApiRequest, ApiResponse } from '@/type/api'
 import { BadRequest, Conflict, NotFound, Unauthorized } from '@/type/error'
+import { setFieldMask } from '@/util/http'
 // import { verifyToken } from "@/util/http";
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -44,15 +46,16 @@ export const internalErrorMiddleware = (
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const tryWrapAPI = (
   handler: (
-    req: Request,
+    req: ApiRequest,
     res: Response,
     next: NextFunction,
     ...rest: any[]
   ) => Promise<ApiResponse>,
   ...rest: any[]
 ) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: ApiRequest, res: Response, next: NextFunction) => {
     try {
+      setFieldMask(req)
       return handler(req, res, next, ...rest)
         .then(({ status, data }) => {
           return res.status(status).json(data)

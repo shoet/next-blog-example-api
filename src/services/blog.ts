@@ -57,7 +57,6 @@ export const postBlog = async ({
   eyeCatchImgUrl,
   tags = [],
 }: AddBlogProps) => {
-  console.log(categoryId)
   const createTags: Prisma.TagCreateOrConnectWithoutBlogsInput[] = tags.map(
     (t) => ({
       where: { name: t },
