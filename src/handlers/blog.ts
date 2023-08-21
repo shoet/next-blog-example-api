@@ -27,6 +27,7 @@ export const getBlogHandler = async (
   if (isNaN(blogId)) {
     throw new BadRequest('Invalid params', req)
   }
+  console.log(req.fieldMask)
 
   const blog = await blogService.getBlog(blogId, req.fieldMask)
   if (blog === undefined) {

@@ -6,6 +6,7 @@ import express from 'express'
 import helmet from 'helmet'
 import * as authHandler from '@/handlers/auth'
 import * as blogHandler from '@/handlers/blog'
+import * as blogStatusHandler from '@/handlers/blog-status'
 import * as categoryHandler from '@/handlers/category'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
 import * as userHandler from '@/handlers/user'
@@ -51,6 +52,7 @@ app.delete('/blog/:id', tryWrapAPI(blogHandler.deleteBlogHandler))
 app.patch('/blog/:id', tryWrapAPI(blogHandler.patchBlogHandler))
 
 app.get('/category', tryWrapAPI(categoryHandler.getCategoryHandler))
+app.get('/blog-status', tryWrapAPI(blogStatusHandler.getBlogStatusHandler))
 
 // public
 app.get('/image/public/:id')

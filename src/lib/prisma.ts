@@ -9,6 +9,7 @@ export const prisma =
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
+// TODO: * 対応
 const EXCLUDED_FIELDS = ['author']
 export function parseFieldMask(
   fieldMask: string[] | undefined,
