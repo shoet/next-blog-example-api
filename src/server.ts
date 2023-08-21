@@ -9,6 +9,7 @@ import * as blogHandler from '@/handlers/blog'
 import * as blogStatusHandler from '@/handlers/blog-status'
 import * as categoryHandler from '@/handlers/category'
 import { tryWrapAPI, internalErrorMiddleware } from '@/handlers/error'
+import * as storageHandler from '@/handlers/storage'
 import * as userHandler from '@/handlers/user'
 import { morgan } from '@/lib/morgan'
 import { NotFound } from '@/type/error'
@@ -42,7 +43,6 @@ app.get('/user/:id', tryWrapAPI(userHandler.getUserHandler))
 // blog crud
 app.get('/blog/ids', tryWrapAPI(blogHandler.getBlogIdsHandler))
 app.get('/blog/:id', tryWrapAPI(blogHandler.getBlogHandler))
-app.get('/blog/:id/tags', tryWrapAPI(blogHandler.getBlogTagsHandler))
 // TODO: POSTに冪等性をもたせるとしたら。
 // 前段でユニークなキーを提供する。
 // クライアントでキーを含めてリクエストする。
@@ -54,7 +54,7 @@ app.patch('/blog/:id', tryWrapAPI(blogHandler.patchBlogHandler))
 app.get('/category', tryWrapAPI(categoryHandler.getCategoryHandler))
 app.get('/blog-status', tryWrapAPI(blogStatusHandler.getBlogStatusHandler))
 
-// public
+// image
 app.get('/image/public/:id')
 app.post('/image/public')
 app.delete('/image/public/:id')
@@ -66,6 +66,12 @@ app.delete('/image/private/:id')
 app.post('/auth/signin', tryWrapAPI(authHandler.signInHandler))
 app.post('/auth/signup', tryWrapAPI(authHandler.signUpHandler))
 app.post('/auth/signout', tryWrapAPI(authHandler.signOutHandler))
+
+// custom method
+app.post(
+  '/storage/public/generate-url',
+  tryWrapAPI(storageHandler.getStoragePutUrlHandler),
+)
 
 // NotFound wrapper
 app.all(

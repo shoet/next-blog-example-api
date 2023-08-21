@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^7.0.1",
     "@prisma/client": "^5.1.1",
     "base32-encode": "^2.0.0",
     "bcrypt": "^5.1.0",

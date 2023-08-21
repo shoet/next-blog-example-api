@@ -1,6 +1,5 @@
-import { Blog, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import * as blogModel from '@/models/blog'
-import { notFoundMessage } from '@/util/error'
 
 export const getBlog = async (id: number, select?: Prisma.BlogSelect) => {
   const blogs = await blogModel.selectBlogs({
