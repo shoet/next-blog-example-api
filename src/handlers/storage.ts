@@ -1,27 +1,30 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Response } from 'express'
 import * as storageServiceGcp from '@/services/storage'
 import { ApiRequest, ApiResponse } from '@/type/api'
+import { generateUniqueFileName } from '@/util/file'
 import { validateDefined } from '@/util/handler'
 
 /** ストレージAPI GCP署名付きURL取得(PUT)
  * @body fileName
  * @returns URL
  */
-export const getStoragePutUrlHandler = async (
+export const generateStoragePutUrlHandler = async (
   req: ApiRequest,
   _res: Response,
   _next: NextFunction,
 ): Promise<ApiResponse> => {
-  const { fileName } = req.body
-
-  console.log(req.body)
-
+  const { fileName, contentType } = req.body
   validateDefined({ fileName }, req)
 
-  const url = await storageServiceGcp.getSignedPutUrlPublic(fileName)
+  const newFileName = generateUniqueFileName(fileName)
+
+  const url = await storageServiceGcp.generateSignedPutUrlPublic(
+    newFileName,
+    contentType,
+  )
 
   return {
-    data: url,
+    data: { url, fileName: newFileName },
     status: 200,
   }
 }

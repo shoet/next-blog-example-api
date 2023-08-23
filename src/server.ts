@@ -70,7 +70,7 @@ app.post('/auth/signout', tryWrapAPI(authHandler.signOutHandler))
 // custom method
 app.post(
   '/storage/public/generate-url',
-  tryWrapAPI(storageHandler.getStoragePutUrlHandler),
+  tryWrapAPI(storageHandler.generateStoragePutUrlHandler),
 )
 
 // NotFound wrapper

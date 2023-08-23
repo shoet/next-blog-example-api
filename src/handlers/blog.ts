@@ -113,6 +113,7 @@ export const createBlogHandler = async (
     publish,
     statusId: statusIdStr,
     tags,
+    eyeCatchImgUrl,
   } = req.body
 
   validateDefined({ title, slug, content, publish }, req)
@@ -130,14 +131,15 @@ export const createBlogHandler = async (
   }
 
   const blog = await blogService.postBlog({
-    title: title,
-    slug: slug,
-    content: content,
-    publish: publish,
-    categoryId: categoryId,
-    authorId: authorId,
-    statusId: statusId,
-    tags: tags,
+    title,
+    slug,
+    content,
+    publish,
+    categoryId,
+    authorId,
+    statusId,
+    tags,
+    eyeCatchImgUrl,
   })
 
   return {

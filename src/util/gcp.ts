@@ -8,13 +8,14 @@ const storage = new Storage({
 export async function generateV4UploadSignedUrl(
   bucketName: string,
   fileName: string,
-  option: GetSignedUrlConfig = {
+  contentType: string = 'image/*',
+) {
+  const option: GetSignedUrlConfig = {
     action: 'write',
     expires: Date.now() + 15 * 60 * 1000,
     version: 'v4',
-    contentType: 'image/*',
-  },
-) {
+    contentType: contentType,
+  }
   const url = await storage
     .bucket(bucketName)
     .file(fileName)
